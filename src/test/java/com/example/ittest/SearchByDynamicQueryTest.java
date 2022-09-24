@@ -1,5 +1,6 @@
 package com.example.ittest;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,6 +79,8 @@ public class SearchByDynamicQueryTest extends BaseItTest{
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data.total").value(9))
                 .andExpect(jsonPath("data.content").isNotEmpty())
+                .andExpect(jsonPath("data.content.[0].createUser").value("62c7ec65baaca09ad14dbd9f"))
+                .andExpect(content().string(Matchers.containsString("limingda")))
                 .andReturn();
         String res = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertFalse(res.contains("跟进结束"));
