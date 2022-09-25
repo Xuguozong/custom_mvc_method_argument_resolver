@@ -1,7 +1,6 @@
 package com.example.config;
 
 import com.example.resolver.ZhFieldRequestResolver;
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -9,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.*;
 import java.util.List;
 
 @Configuration
-@AllArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
     @Override

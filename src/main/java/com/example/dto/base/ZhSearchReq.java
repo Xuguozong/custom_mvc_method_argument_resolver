@@ -54,6 +54,7 @@ public abstract class ZhSearchReq {
 
     /**
      * 获取子类字段的值,子类需要有 getter 方法
+     * @deprecated
      */
     private void filedCriteriaForSubClass(Criteria criteria, Field f) {
         Method[] methods = this.getClass().getDeclaredMethods();
@@ -63,7 +64,7 @@ public abstract class ZhSearchReq {
                 .ifPresent(m -> {
                     try {
                         Object value = m.invoke(this, null);
-                        filedCriteria(criteria, f, value);
+                        // filedCriteria(criteria, f, value);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     } catch (InvocationTargetException e) {
@@ -103,17 +104,8 @@ public abstract class ZhSearchReq {
             superFields = superclass.getDeclaredFields();
         }
         Field[] fields = reqClass.getDeclaredFields();
-        Arrays.stream(fields).forEach(f -> filedCriteriaForSubClass(criteria, f));
-        Arrays.stream(superFields).forEach(f -> {
-            Object value = null;
-            try {
-                value = f.get(this);
-            } catch (IllegalAccessException e) {
-                // 内部调用，不会有问题
-                e.printStackTrace();
-            }
-            filedCriteria(criteria, f, value);
-        });
+        Arrays.stream(fields).forEach(f -> filedCriteria(criteria, f));
+        Arrays.stream(superFields).forEach(f -> filedCriteria(criteria, f));
         if (StringUtils.isNotBlank(getStartTime()) && StringUtils.isNotBlank(getEndTime())) {
             criteria.and("录入时间").gte(getStartTime()).lte(getEndTime());
         }
@@ -140,21 +132,28 @@ public abstract class ZhSearchReq {
     /**
      * 对于单个查询参数的处理
      */
-    protected void filedCriteria(Criteria criteria, Field f, Object fieldValue) {
-        if (Objects.isNull(fieldValue)) return;
+    protected void filedCriteria(Criteria criteria, Field f) {
         String fName = f.getName();
         if ("sorter".equals(fName)) return;
         String typeName = f.getGenericType().getTypeName();
         ZhBindAlias alias = f.getAnnotation(ZhBindAlias.class);
-
+        Object value = null;
+        try {
+            f.setAccessible(true);
+            value = f.get(this);
+        } catch (IllegalAccessException e) {
+            // 内部调用，不会有问题
+            e.printStackTrace();
+        }
+        if (Objects.isNull(value)) return;
         if (Objects.nonNull(alias)) {
             if (!alias.includeQuery()) return;
             String where = alias.value();
             if ("java.lang.String".equals(typeName) && !where.contains("时间")) {
                 // 单值采用前缀匹配查询
-                criteria.and(where).regex("^" + fieldValue);
+                criteria.and(where).regex("^" + value);
             } else if ("java.util.List<java.lang.String>".equals(typeName) && !where.contains("时间")) {
-                List<String> values = (List<String>) fieldValue;
+                List<String> values = (List<String>) value;
                 if (!values.contains("全选")) {
                     // 多值采用 $in 查询
                     criteria.and(where).in(values);
@@ -162,7 +161,7 @@ public abstract class ZhSearchReq {
             }
         } else {
             // 等值查询
-            criteria.and(fName).is(fieldValue);
+            criteria.and(fName).is(value);
         }
     }
 }
