@@ -5,6 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.example.annotation.ZhBindAlias;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -20,7 +21,8 @@ import java.util.stream.Stream;
  * 公共查询参数
  */
 @Data
-public abstract class ZhSearchReq {
+@Accessors(chain = true)
+public class ZhSearchReq {
 
     @ZhBindAlias("录入时间")
     private String startTime;
