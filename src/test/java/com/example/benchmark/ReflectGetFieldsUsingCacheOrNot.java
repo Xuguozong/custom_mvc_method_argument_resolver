@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Hardware: CPU-Intel i5 12400 Memory:16G DDR4 2666
  * Benchmark                                              Mode  Cnt         Score        Error  Units
  * ReflectGetFieldsUsingCacheOrNot.fieldGetWithCache     thrpt   25  48755859.654 ± 424249.143  ops/s
  * ReflectGetFieldsUsingCacheOrNot.fieldGetWithoutCache  thrpt   25  18318158.634 ± 184489.127  ops/s
