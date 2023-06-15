@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * Hardware: CPU-Intel i5 12400 Memory:16G DDR4 2666
  * Benchmark                                                Mode  Cnt         Score        Error  Units
  * ReflectFieldGetVSGetterMethodInvoke.fieldGet            thrpt   25  15181666.543 ± 112999.822  ops/s
  * ReflectFieldGetVSGetterMethodInvoke.getterMethodInvoke  thrpt   25   6511663.013 ±   4912.844  ops/s
